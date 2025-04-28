@@ -1,8 +1,9 @@
 const timesRepo = require('../repositorios/timesRepo');
 const jogadoresRepo = require('../repositorios/jogadoresRepo');
+const contratosRepo = require('../repositorios/contratosRepo');
 
 const contratosBusinessRules = {
-    canCreate(contrato) {
+    isAContract(contrato) {
         //testar se é um Contrato válido atributos id, tipo, idTime, idJogador, inicio, fim
         if (contrato == undefined) {
             const erro = new Error("Contrato inválido.", "ContratosBusinessRules.js", 5);
@@ -29,14 +30,27 @@ const contratosBusinessRules = {
             throw erro;
             
         }
-        if (contrato.fim != undefined) {
-            contrato.fim = '';
-            
-        }
+        
         if (contrato.id == undefined) {
             contrato.id = 0;
         }
+        return true;
+    },
+    jogadorHasContract(idJogador) {
+        const contratos = contratosRepo.getAllContratos();
+        let ret = false;
+        contratos.forEach((contrato) => {
+            if (contrato.idJogador == idJogador && (contrato.fim == '' || contrato.fim == undefined)) {
+                ret = true;
+            }
+        });
+        return ret;
 
+    },
+    canCreate(contrato) {
+        //checar se o contrato é válido
+        this.isAContract(contrato);
+        
         const jog = jogadoresRepo.getJogadorById(
             contrato.idJogador
         );
@@ -52,8 +66,14 @@ const contratosBusinessRules = {
         if (time == undefined) {
             const erro = new Error(`time id ${contrato.idTime} não encontrado.`);
             throw erro;
-            //return `time id ${contrato.idTime} não encontrado.`;
-
+            
+        }
+        console.log("contrato.fim", contrato.fim);
+        if (contrato.fim == undefined || contrato.fim == '') {
+            if (this.jogadorHasContract(contrato.idJogador)) {
+                const erro = new Error(`jogador id ${contrato.idJogador} já tem contrato ativo.`);
+                throw erro;
+            }
         }
     
     }

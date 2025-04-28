@@ -7,7 +7,17 @@ class Contrato {
         this.inicio = inicio;
         this.fim = fim;
     }
+    static build(json) {
+        return new Contrato(
+            json.id,
+            json.tipo,
+            json.idTime,
+            json.idJogador,
+            json.inicio,
+            json.fim
+        );
+    }
     isAtivo() {
-        return this.fim == undefined;
+        return this.fim == undefined || this.fim == '' || this.fim == null;
     }
 }
