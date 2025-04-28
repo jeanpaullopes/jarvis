@@ -7,7 +7,7 @@ const contratosController
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  let response = constratosController.getAllContratos(req.get('api_key'));
+  let response = contratosController.getAllContratos(req.get('api_key'));
   res.status(response.code).json(response.payload);
 
 });

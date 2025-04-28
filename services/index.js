@@ -11,7 +11,7 @@ const services = {
         return new Response(403,undefined,'Não Autorizado')
     },
     createCreatedResponse() {
-
+        return new Response(201,undefined,'Criado com sucesso');
     },
     createUnprocessableReponse(msg) {
         return new Response(422,undefined,msg) 
